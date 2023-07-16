@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Analysis for Mnemonic: {{ mnemonic }}</title>
+</head>
+<body>
+    <h1>Analysis for Mnemonic: {{ mnemonic }}</h1>
+    {% if error_message %}
+        <p>{{ error_message }}</p>
+    {% else %}
+        {% if line_plot_img %}
+            <h2>Time Series - Line Plot</h2>
+            <img src="data:image/png;base64,{{ line_plot_img }}" alt="Line Plot">
+        {% endif %}
+        {% if histogram_img %}
+            <h2>Histogram</h2>
+            <img src="data:image/png;base64,{{ histogram_img }}" alt="Histogram">
+        {% endif %}
+        {% if box_plot_img %}
+            <h2>Box Plot</h2>
+            <img src="data:image/png;base64,{{ box_plot_img }}" alt="Box Plot">
+        {% endif %}
+        {% if autocorrelation_plot_img %}
+            <h2>Autocorrelation Plot</h2>
+            <img src="data:image/png;base64,{{ autocorrelation_plot_img }}" alt="Autocorrelation Plot">
+        {% endif %}
+        <h2>Statistics:</h2>
+        <p>Mean: {{ mean_value }}</p>
+        <p>Min: {{ std_dev_min }}</p>
+        <p>Max: {{ std_dev_max }}</p>
+    {% endif %}
+    <a href="{{ url_for('homepage') }}">Back to Homepage</a>
+</body>
+</html>

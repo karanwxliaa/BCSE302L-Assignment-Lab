@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Retrieval</title>
+</head>
+<body>
+    <h1>Data Retrieval</h1>
+    <form id="dataForm">
+        <label for="numMnemonics">Number of Mnemonics to Retrieve:</label>
+        <input type="number" id="numMnemonics" name="numMnemonics" required>
+        <button type="submit">Retrieve Data</button>
+    </form>
+    <p id="message"></p>
+
+    <script>
+        document.getElementById("dataForm").addEventListener("submit", function (event) {
+            event.preventDefault();
+            const numMnemonics = document.getElementById("numMnemonics").value;
+    
+            // Debugging: Check the value of numMnemonics
+            console.log("numMnemonics:", numMnemonics);
+    
+            fetch("/retrieve_data", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ "numMnemonics": numMnemonics }),  // Ensure the key is "numMnemonics"
+            })
+            .then((response) => response.json())
+            .then((data) => {
+                document.getElementById("message").innerText = data.message;
+            })
+            .catch((error) => {
+                console.error("Error:", error);
+            });
+        });
+    </script>
+    
+</body>
+</html>

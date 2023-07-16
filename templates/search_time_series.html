@@ -1,0 +1,123 @@
+<!-- search_time_series.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Time Series</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f2f2f2;
+        }
+        .search-container {
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            max-width: 600px;
+            text-align: center;
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .result {
+            margin-top: 20px;
+            font-weight: bold;
+            color: #4CAF50; /* Green color for the result message */
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <div class="search-container">
+        <h1>Search Time Series</h1>
+        <form id="searchForm" method="post" action="/search">
+            <label for="mnemonic">Enter Mnemonic:</label>
+            <input type="text" id="mnemonic" name="mnemonic" required>
+            <button type="submit">Search</button>
+        </form>
+        <div class="result" id="resultMessage"></div>
+        <div id="dataContainer"></div>
+    </div>
+
+    <script>
+        document.getElementById("searchForm").addEventListener("submit", function (event) {
+            event.preventDefault();
+            const mnemonic = document.getElementById("mnemonic").value;
+
+            fetch("/search", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                },
+                body: `mnemonic=${encodeURIComponent(mnemonic)}`,
+            })
+            .then((response) => response.json())
+            .then((data) => {
+                const resultMessage = document.getElementById("resultMessage");
+                const dataContainer = document.getElementById("dataContainer");
+                if (data.exists) {
+                    resultMessage.innerText = "Time series exists for the input";
+                    resultMessage.style.display = "block";
+                    // Display the series_data for the particular mnemonic
+                    const seriesData = data.series_data;
+                    let tableHTML = '<table>';
+                    tableHTML += '<tr><th>Field</th><th>Value</th></tr>';
+                    for (const key in seriesData) {
+                        if (typeof seriesData[key] === "object" && key === "data") {
+                            // If the value is an array (e.g., data), display only the first 5 values
+                            const first5Values = seriesData[key].slice(0, 5);
+                            tableHTML += `<tr><td>${key}</td><td>${JSON.stringify(first5Values)}</td></tr>`;
+                        } else {
+                            tableHTML += `<tr><td>${key}</td><td>${seriesData[key]}</td></tr>`;
+                        }
+                    }
+                    tableHTML += '</table>';
+                    dataContainer.innerHTML = tableHTML;
+                } else {
+                    resultMessage.innerText = "Time series does not exist for the input";
+                    resultMessage.style.display = "block";
+                    dataContainer.innerHTML = ''; // Clear the data container if no series_data exists
+                }
+            })
+            .catch((error) => {
+                console.error("Error:", error);
+            });
+        });
+    </script>
+</body>
+</html>
+

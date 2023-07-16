@@ -1,0 +1,97 @@
+<!-- homepage.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <title>Main Homepage</title>
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f2f2f2;
+        }
+        .homepage-container {
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
+            text-align: center;
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="homepage-container">
+        <h1>Main Homepage</h1>
+        <form id="dataForm">
+            <label for="numMnemonics">Number of Mnemonics to Retrieve:</label>
+            <input type="number" id="numMnemonics" name="numMnemonics" required>
+            <button type="submit">Retrieve Data</button>
+        </form>
+        <p id="message"></p>
+
+
+
+        <h2>Buttons:</h2>
+        <button onclick="window.location.href = '/search_time_series'">Search Time Series</button>
+        <button onclick="window.location.href = '/add_data'">Add Data</button>
+        <button onclick="window.location.href = '/input'">Analyze Data</button>
+
+
+    </div>
+
+    <script>
+        document.getElementById("dataForm").addEventListener("submit", function (event) {
+            event.preventDefault();
+            const numMnemonics = document.getElementById("numMnemonics").value;
+    
+            // Debugging: Check the value of numMnemonics
+            console.log("numMnemonics:", numMnemonics);
+    
+            fetch("/retrieve_data", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ "numMnemonics": numMnemonics }),  // Ensure the key is "numMnemonics"
+            })
+            .then((response) => response.json())
+            .then((data) => {
+                document.getElementById("message").innerText = data.message;
+            })
+            .catch((error) => {
+                console.error("Error:", error);
+            });
+        });
+    </script>
+</body>
+</html>
+
+<!-- homepage.html -->
+
+

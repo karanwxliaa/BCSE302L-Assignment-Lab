@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Analysis for Mnemonic: {{ mnemonic }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            margin-top: 40px;
+        }
+
+        img {
+            max-width: 100%;
+        }
+
+        .error {
+            color: red;
+        }
+
+        .statistics {
+            margin-top: 30px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-gap: 10px;
+        }
+
+        .statistics p {
+            margin: 0;
+        }
+
+        .back-link {
+            display: block;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Analysis for Mnemonic: {{ mnemonic }}</h1>
+    {% if error_message %}
+        <p class="error">{{ error_message }}</p>
+    {% else %}
+        {% if line_plot_img %}
+            <h2>Time Series - Line Plot</h2>
+            <img src="data:image/png;base64,{{ line_plot_img }}" alt="Line Plot">
+        {% endif %}
+        {% if histogram_img %}
+            <h2>Histogram</h2>
+            <img src="data:image/png;base64,{{ histogram_img }}" alt="Histogram">
+        {% endif %}
+        {% if box_plot_img %}
+            <h2>Box Plot</h2>
+            <img src="data:image/png;base64,{{ box_plot_img }}" alt="Box Plot">
+        {% endif %}
+        {% if autocorrelation_plot_img %}
+            <h2>Autocorrelation Plot</h2>
+            <img src="data:image/png;base64,{{ autocorrelation_plot_img }}" alt="Autocorrelation Plot">
+        {% endif %}
+        <div class="statistics">
+            <div>
+                <h3>Statistics:</h3>
+                <p>Mean: {{ mean_value }}</p>
+            </div>
+            <div>
+                <p>Min: {{ std_dev_min }}</p>
+            </div>
+            <div>
+                <p>Max: {{ std_dev_max }}</p>
+            </div>
+        </div>
+    {% endif %}
+    <a class="back-link" href="{{ url_for('homepage') }}">Back to Homepage</a>
+</body>
+</html>
